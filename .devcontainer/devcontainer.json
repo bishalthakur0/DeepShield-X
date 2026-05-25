@@ -1,0 +1,30 @@
+{
+  "name": "DeepShield X Workspace",
+  "image": "mcr.microsoft.com/devcontainers/universal:2",
+  "forwardPorts": [5173, 8080, 8000],
+  "portsAttributes": {
+    "5173": {
+      "label": "React UI (Vite)",
+      "onAutoForward": "openPreview"
+    },
+    "8080": {
+      "label": "Spring Boot Backend",
+      "onAutoForward": "silent"
+    },
+    "8000": {
+      "label": "FastAPI AI Engine",
+      "onAutoForward": "silent"
+    }
+  },
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "ms-python.python",
+        "vscjava.vscode-java-pack",
+        "vmware.vscode-spring-boot-pack",
+        "dbaeumer.vscode-eslint"
+      ]
+    }
+  },
+  "postCreateCommand": "npm install --prefix frontend && pip install -r ai_engine/requirements.txt"
+}
