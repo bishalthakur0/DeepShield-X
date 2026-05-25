@@ -5,15 +5,18 @@
   "portsAttributes": {
     "5173": {
       "label": "React UI (Vite)",
-      "onAutoForward": "openPreview"
+      "onAutoForward": "openPreview",
+      "visibility": "public"
     },
     "8080": {
       "label": "Spring Boot Backend",
-      "onAutoForward": "silent"
+      "onAutoForward": "silent",
+      "visibility": "public"
     },
     "8000": {
       "label": "FastAPI AI Engine",
-      "onAutoForward": "silent"
+      "onAutoForward": "silent",
+      "visibility": "public"
     }
   },
   "customizations": {
