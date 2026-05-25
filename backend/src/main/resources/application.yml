@@ -1,0 +1,67 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: deepshield-backend
+  profiles:
+    active: dev
+  servlet:
+    multipart:
+      max-file-size: 50MB
+      max-request-size: 50MB
+
+# Development Profile (H2 In-Memory)
+---
+spring:
+  config:
+    activate:
+      on-profile: dev
+  datasource:
+    url: jdbc:h2:mem:deepshielddb;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE
+    driver-class-name: org.h2.Driver
+    username: sa
+    password: password
+  h2:
+    console:
+      enabled: true
+      path: /h2-console
+      settings:
+        web-allow-others: true
+  jpa:
+    database-platform: org.hibernate.dialect.H2Dialect
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+
+ai-engine:
+  url: http://localhost:8000
+
+# Security configuration details (for dev environments we define a static secret key)
+jwt:
+  secret: 407f342b474e626e2f4f5c5332302e3b2b622b7a2d4b6b7c3d2f2d2426305a5f
+  expiration: 86400000 # 24 hours in milliseconds
+
+# Production Profile (PostgreSQL Database)
+---
+spring:
+  config:
+    activate:
+      on-profile: prod
+  datasource:
+    url: jdbc:postgresql://db:5432/deepshielddb
+    driver-class-name: org.postgresql.Driver
+    username: postgres
+    password: postgrespassword
+  jpa:
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    hibernate:
+      ddl-auto: update
+    show-sql: false
+
+ai-engine:
+  url: http://ai_engine:8000
+
+jwt:
+  secret: ${JWT_SECRET:407f342b474e626e2f4f5c5332302e3b2b622b7a2d4b6b7c3d2f2d2426305a5f}
+  expiration: 86400000

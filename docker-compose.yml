@@ -1,0 +1,65 @@
+version: '3.8'
+
+services:
+  # Database Service (PostgreSQL)
+  db:
+    image: postgres:15-alpine
+    container_name: deepshield_db
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_DB: deepshielddb
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgrespassword
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    restart: unless-stopped
+
+  # AI Forensic Inference Service (FastAPI)
+  ai_engine:
+    build:
+      context: ./ai_engine
+      dockerfile: Dockerfile
+    container_name: deepshield_ai_engine
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./ai_engine/static/forensics:/app/static/forensics
+    restart: unless-stopped
+
+  # Core Business Logic & Orchestration Service (Spring Boot)
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: deepshield_backend
+    ports:
+      - "8080:8080"
+    environment:
+      - SPRING_PROFILES_ACTIVE=prod
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://db:5432/deepshielddb
+      - SPRING_DATASOURCE_USERNAME=postgres
+      - SPRING_DATASOURCE_PASSWORD=postgrespassword
+      - AI-ENGINE_URL=http://ai_engine:8000
+      - JWT_SECRET=407f342b474e626e2f4f5c5332302e3b2b622b7a2d4b6b7c3d2f2d2426305a5f
+    depends_on:
+      - db
+      - ai_engine
+    volumes:
+      - ./backend/uploads:/app/uploads
+    restart: unless-stopped
+
+  # Client Interface Service (React)
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: deepshield_frontend
+    ports:
+      - "80:80"
+    depends_on:
+      - backend
+    restart: unless-stopped
+
+volumes:
+  postgres_data:
